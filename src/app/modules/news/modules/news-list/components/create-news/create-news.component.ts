@@ -1,19 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { MatDialogRef } from "@angular/material/dialog";
-import { UntilDestroy } from "@ngneat/until-destroy";
-import { NewsService } from "../../../../services/news.service";
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { UntilDestroy } from '@ngneat/until-destroy';
+import { NewsService } from '../../../../services/news.service';
 
 @UntilDestroy()
 @Component({
-  selector: 'create-news',
+  selector: 'app-create-news',
   templateUrl: './create-news.component.html',
   styleUrls: ['./create-news.component.scss'],
 })
 export class CreateNewsComponent implements OnInit {
-
   uploadedImage: File;
-  readonly imageUploadControl = new FormControl<File[]>([], [Validators.required])
+  readonly imageUploadControl = new FormControl<File[]>(
+    [],
+    [Validators.required]
+  );
 
   readonly newsForm = new FormGroup({
     title: new FormControl<string>('', [Validators.required]),
@@ -23,9 +25,8 @@ export class CreateNewsComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<CreateNewsComponent>,
-    private newsService: NewsService,
-  ) {
-  }
+    private newsService: NewsService
+  ) {}
 
   ngOnInit() {
     this.initializeDialogRef();
@@ -36,11 +37,12 @@ export class CreateNewsComponent implements OnInit {
   }
 
   onImageUploadClick(fileInputEvent: Event) {
+    // eslint-disable-next-line
     this.uploadedImage = (<HTMLInputElement>fileInputEvent.target).files![0];
   }
 
   async onSaveClick() {
-    this.newsForm.controls.imageUpload.markAsTouched()
+    this.newsForm.controls.imageUpload.markAsTouched();
     if (this.newsForm.invalid) return this.newsForm.updateValueAndValidity();
 
     await this.saveCustomNews();
@@ -57,7 +59,7 @@ export class CreateNewsComponent implements OnInit {
       const reader = new FileReader();
       reader.readAsDataURL(this.uploadedImage);
       reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
+      reader.onerror = (error) => reject(error);
     });
   }
 
@@ -76,7 +78,7 @@ export class CreateNewsComponent implements OnInit {
   }
 
   private async saveCustomNews() {
-    const {title, description} = this.newsForm.value;
+    const { title, description } = this.newsForm.value;
     const base64Image = await this.toBase64();
     this.newsService.saveNews({
       titleImageRaw: base64Image,

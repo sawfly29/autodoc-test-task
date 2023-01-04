@@ -1,6 +1,6 @@
-import { NewsPreview } from "./news-preview.interface";
+import { NewsPreview } from './news-preview.interface';
 
 export interface NewsResponse {
-  totalCount: number,
-  news: NewsPreview[],
+  totalCount: number;
+  news: NewsPreview[];
 }
